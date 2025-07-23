@@ -1,57 +1,29 @@
 const input = document.getElementById("todo-input");
 const addBtn = document.getElementById("add-btn");
 const todoList = document.getElementById("todo-list");
-const createSelect = document.getElementById("category-select"); // 取得類別下拉選單
+const clearBtn = document.getElementById("clear-btn");
 
 let todos = JSON.parse(localStorage.getItem("todos")) || [];
 
-function createTodoElement(text, completed = false, category = "") {
-  const li = document.createElement("li");
-  if (completed) li.classList.add("completed");
-
-  const categoryTag = document.createElement("small");
-  categoryTag.textContent = `[${category}]`;
-  categoryTag.style.marginRight = "0.5rem";
-
-  const span = document.createElement("span");
-  span.textContent = text;
-
-  li.appendChild(categoryTag);
-  li.appendChild(span);
+// 渲染所有任務
+function renderTodos() {
+  todoList.innerHTML = "";
+  todos.forEach(function (todo) {
+    const li = createTodoElement(todo.text, todo.completed);
+    todoList.appendChild(li);
+  });
+  updateStats();
 }
 
-
-// 拖曳排序功能
-new Sortable(todoList, {
-  animation: 150,
-  onEnd: function () {
-    const newTodos = Array.from(todoList.children).map(li => {
-      const text = li.querySelector("span").textContent;
-      const completed = li.classList.contains("completed");
-      const category = li.querySelector("small")?.textContent.replace(/\[|\]/g, "") || "";
-      return { text, completed, category };
-    });
-    todos = newTodos;
-    saveTodos();
-  }
-});
-
-// 建立一個代辦項目元素
-function createTodoElement(text, completed = false, category = "") {
+// 建立單一任務項目元素
+function createTodoElement(text, completed = false) {
   const li = document.createElement("li");
   if (completed) li.classList.add("completed");
-
-  // 類別標籤
-  const categoryTag = document.createElement("small");
-  categoryTag.textContent = `[${category}]`;
-  categoryTag.style.marginRight = "0.5rem";
 
   const span = document.createElement("span");
   span.textContent = text;
 
-  li.appendChild(categoryTag); // 類別放在最前
-  li.appendChild(span);
-
+  // 點一下切換完成狀態
   span.addEventListener("click", function () {
     li.classList.toggle("completed");
     const index = Array.from(todoList.children).indexOf(li);
@@ -60,6 +32,7 @@ function createTodoElement(text, completed = false, category = "") {
     updateStats();
   });
 
+  // 雙擊編輯任務
   span.addEventListener("dblclick", function () {
     const newText = prompt("請輸入新的內容：", text);
     if (newText !== null && newText.trim() !== "") {
@@ -70,6 +43,7 @@ function createTodoElement(text, completed = false, category = "") {
     }
   });
 
+  // 刪除按鈕
   const delBtn = document.createElement("button");
   delBtn.textContent = "✕";
   delBtn.className = "delete-btn";
@@ -81,6 +55,7 @@ function createTodoElement(text, completed = false, category = "") {
     renderTodos();
   });
 
+  li.appendChild(span);
   li.appendChild(delBtn);
 
   li.setAttribute("draggable", true);
@@ -91,38 +66,35 @@ function createTodoElement(text, completed = false, category = "") {
   return li;
 }
 
-// 儲存至 localStorage
+// 儲存任務
 function saveTodos() {
   localStorage.setItem("todos", JSON.stringify(todos));
 }
 
 // 新增任務
-function addTodo() {
+function addTodo(event) {
+  event.preventDefault(); // 防止表單送出
   const text = input.value.trim();
-  const category = createSelect.value;
-
   if (text !== "") {
-    todos.push({ text, completed: false, category }); // ✅ 加入 category
+    todos.push({ text: text, completed: false });
     saveTodos();
     renderTodos();
     input.value = "";
   }
 }
 
-addBtn.addEventListener("click", function (e) {
-  e.preventDefault(); // 防止表單提交
-  addTodo();
-});
+// 新增按鈕事件
+addBtn.addEventListener("click", addTodo);
 
+// Enter 鍵新增
 input.addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
     event.preventDefault();
-    addTodo();
+    addTodo(event);
   }
 });
 
-// 全部清除
-const clearBtn = document.getElementById("clear-btn");
+// 全部清除按鈕
 clearBtn.addEventListener("click", function () {
   if (confirm("確定要清除所有待辦事項嗎？")) {
     todos = [];
@@ -131,7 +103,7 @@ clearBtn.addEventListener("click", function () {
   }
 });
 
-// 拖曳處理
+// 拖曳排序
 let draggedItem = null;
 
 function dragStart(e) {
@@ -155,8 +127,7 @@ function dragOver(e) {
     todos = Array.from(todoList.children).map(li => {
       const text = li.querySelector("span").textContent;
       const completed = li.classList.contains("completed");
-      const category = li.querySelector("small")?.textContent.replace(/\[|\]/g, "") || "";
-      return { text, completed, category };
+      return { text, completed };
     });
     saveTodos();
   }
@@ -166,7 +137,7 @@ function drop() {
   draggedItem = null;
 }
 
-// 更新統計資訊
+// 更新統計數字
 function updateStats() {
   const total = todos.length;
   const completed = todos.filter(todo => todo.completed).length;
@@ -175,7 +146,7 @@ function updateStats() {
     `共 ${total} 項，完成 ${completed} 項，未完成 ${uncompleted} 項`;
 }
 
-// 導覽摺疊功能
+// 導覽區的展開與收合
 window.addEventListener("DOMContentLoaded", function () {
   renderTodos();
 
@@ -185,6 +156,8 @@ window.addEventListener("DOMContentLoaded", function () {
   noticeHeader.addEventListener("click", function () {
     const isVisible = noticeContent.style.display !== "none";
     noticeContent.style.display = isVisible ? "none" : "block";
-    noticeHeader.textContent = isVisible ? "📌 使用導覽（展開）" : "📌 使用導覽（收合）";
+    noticeHeader.textContent = isVisible
+      ? "📌 使用導覽（展開）"
+      : "📌 使用導覽（收合）";
   });
 });
