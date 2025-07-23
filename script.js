@@ -86,8 +86,19 @@ function addTodo() {
 
 addBtn.addEventListener("click", addTodo);
 
+let isComposing = false;
+
+// 使用中文輸入時會觸發
+input.addEventListener("compositionstart", function () {
+  isComposing = true;
+});
+input.addEventListener("compositionend", function () {
+  isComposing = false;
+});
+
+// 監聽 Enter 鍵（只有在非輸入中文時才觸發）
 input.addEventListener("keydown", function (event) {
-  if (event.key === "Enter") {
+  if (event.key === "Enter" && !isComposing) {
     event.preventDefault();
     addTodo();
   }
