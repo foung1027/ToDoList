@@ -12,7 +12,22 @@ function renderTodos() {
     todoList.appendChild(li);
   });
   updateStats();
+
+  // ✅ 在這裡初始化拖曳功能
+  new Sortable(todoList, {
+    animation: 150,
+    onEnd: function () {
+      const newTodos = Array.from(todoList.children).map(li => {
+        const text = li.querySelector("span").textContent;
+        const completed = li.classList.contains("completed");
+        return { text, completed };
+      });
+      todos = newTodos;
+      saveTodos();
+    }
+  });
 }
+
 
 function createTodoElement(text, completed = false) {
   const li = document.createElement("li");
