@@ -10,44 +10,30 @@
 <body>
   <h1>今日待辦任務</h1>
 
-  <!-- 任務統計資訊 -->
   <p id="stats">共 0 項，完成 0 項，未完成 0 項</p>
 
-  <!-- 任務輸入區塊 -->
   <div id="input-area">
     <input type="text" id="todo-input" placeholder="請輸入待辦任務" />
     <button id="add-btn" class="add-btn" type="button">新增</button>
     <button id="clear-btn" class="clear-btn" type="button">全部<br>清除</button>
   </div>
 
-  <!-- 使用導覽說明 -->
   <div id="notice-container">
     <div id="notice-header">📌 使用導覽（展開）</div>
     <div id="notice-content" style="display: none;">
       <p>哈囉！讓我們一分鐘快速導覽功能吧 😊</p>
-
-      <p>
-        <strong>[新增功能]</strong><br />
-        👉🏻 新增「全部清除」，就可以輕鬆把已完成的任務刪掉囉！！
-      </p>
-
-      <p>
-        <strong>[基本功能]</strong><br />
-        👉🏻 按 Enter 鍵快速新增事項<br />
-        👉🏻 點一下任務會標示完成（刪除線）<br />
-        👉🏻 點擊「✕」可刪除單筆事項<br />
-        👉🏻 點兩下可重新編輯內容<br />
+      <p><strong>[新增功能]</strong><br>👉🏻 新增「全部清除」，就可以輕鬆把已完成的任務刪掉囉！！</p>
+      <p><strong>[基本功能]</strong><br>
+        👉🏻 按 Enter 鍵快速新增事項<br>
+        👉🏻 點一下任務會標示完成（刪除線）<br>
+        👉🏻 點擊「✕」可刪除單筆事項<br>
+        👉🏻 點兩下可重新編輯內容<br>
         👉🏻 任務可以拖曳調整順序
       </p>
-
-      <p>
-        <strong>[其他功能]</strong><br />
-        👉🏻 上方統計區會即時顯示任務完成狀態！
-      </p>
+      <p><strong>[其他功能]</strong><br>👉🏻 上方統計區會即時顯示任務完成狀態！</p>
     </div>
   </div>
 
-  <!-- 任務清單 -->
   <ul id="todo-list"></ul>
 
   <script src="script.js"></script>

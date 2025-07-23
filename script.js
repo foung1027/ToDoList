@@ -65,7 +65,7 @@ function addTodo() {
     todos.push({ text: text, completed: false });
     saveTodos();
     renderTodos();
-    input.value = ""; // ✅ 一定要有這行才會清空！
+    input.value = ""; // ✅ 成功清空輸入框
   }
 }
 
@@ -103,6 +103,8 @@ window.addEventListener("DOMContentLoaded", function () {
   noticeHeader.addEventListener("click", function () {
     const isVisible = noticeContent.style.display !== "none";
     noticeContent.style.display = isVisible ? "none" : "block";
-    noticeHeader.textContent = isVisible ? "📌 使用導覽（展開）" : "📌 使用導覽（收合）";
+    noticeHeader.textContent = isVisible
+      ? "📌 使用導覽（展開）"
+      : "📌 使用導覽（收合）";
   });
 });
